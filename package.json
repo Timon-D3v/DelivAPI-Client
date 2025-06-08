@@ -2,17 +2,17 @@
   "name": "delivapi-client",
   "version": "0.0.1",
   "description": "The client function for my personal CDN/WebAPI for uploading and pulling images and other files from.",
-  "homepage": "https://github.com/Timon-D3v/delivapi-client#readme",
+  "homepage": "https://github.com/Timon-D3v/DelivAPI-Client#readme",
   "author": "Timon Fiedler",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Timon-D3v/delivapi-client.git"
+    "url": "git+https://github.com/Timon-D3v/DelivAPI-Client.git"
   },
   "bugs": {
-    "url": "https://github.com/Timon-D3v/delivapi-client/issues"
+    "url": "https://github.com/Timon-D3v/DelivAPI-Client/issues"
   },
   "scripts": {
     "build": "tsc",
