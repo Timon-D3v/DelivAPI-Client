@@ -46,15 +46,6 @@ async function delivApiUpload(user: string, apiKey: string, blob: Blob, endpoint
     return response as unknown as DelivApiResponse;
 }
 
-import fs from "fs";
-
-const buffer = fs.readFileSync("C:/Users/fiedl/Nextcloud/Programmieren/website/public/me.png");
-const blob = new Blob([buffer], { type: "image/jpeg" });
-
-delivApiUpload("timon", "4dbc2ff2cb26982484674576c41a26c3c1edfd0ebb85ffa941c9726fb036cb021825d843f83d68262519aef7f5db0f652c8c328236c1bf490791bd38e56a1fef", blob, "http://localhost:8080/api/upload")
-    .then((res) => console.log(res))
-    .catch((err) => console.error(err));
-
 export { createRawData, delivApiUpload };
 
 export default delivApiUpload;
