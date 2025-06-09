@@ -4,7 +4,6 @@ exports.createRawData = createRawData;
 exports.delivApiUpload = delivApiUpload;
 const tslib_1 = require("tslib");
 const crypto_1 = tslib_1.__importDefault(require("crypto"));
-const file_type_1 = require("file-type");
 const mime_types_1 = require("mime-types");
 async function createRawData(blob, user, mimeType, fileExtension, timestamp) {
     let buffer;
@@ -18,21 +17,12 @@ async function createRawData(blob, user, mimeType, fileExtension, timestamp) {
     const hex = buffer.toString("hex");
     return `${hex}${user}${mimeType}${fileExtension}${timestamp}`;
 }
-async function delivApiUpload(user, apiKey, blob, endpoint = "api.timondev.com/api/upload") {
-    let blobType;
+async function delivApiUpload(user, apiKey, blob, mimeType, endpoint = "api.timondev.com/api/upload") {
     if (typeof blob !== "undefined" && Buffer.isBuffer(blob)) {
         const uInt8Array = new Uint8Array(blob);
-        blobType = await (0, file_type_1.fileTypeFromBuffer)(uInt8Array);
-        blob = new Blob([uInt8Array], { type: blobType?.mime || "application/octet-stream" });
+        blob = new Blob([uInt8Array], { type: mimeType });
     }
-    else {
-        blobType = await (0, file_type_1.fileTypeFromBlob)(blob);
-    }
-    let mimeType = blobType?.mime || blob?.type || "application/octet-stream";
-    let fileExtension = blobType?.ext || "";
-    if (fileExtension === "" && (0, mime_types_1.extension)(mimeType) !== false) {
-        fileExtension = (0, mime_types_1.extension)(mimeType) || "";
-    }
+    const fileExtension = (0, mime_types_1.extension)(mimeType) || "";
     const currentTime = Date.now().toString();
     const formData = new FormData();
     formData.append("file", blob);

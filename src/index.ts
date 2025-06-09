@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import { fileTypeFromBlob, fileTypeFromBuffer } from "file-type";
 import { extension } from "mime-types";
 import type { DelivApiResponse } from "./index.d";
 
@@ -8,6 +7,7 @@ async function createRawData(blob: Blob | Buffer, user: string, mimeType: string
 
     if (blob instanceof Blob && !Buffer.isBuffer(blob)) {
         const arrayBuffer = await blob.arrayBuffer();
+
         buffer = Buffer.from(arrayBuffer);
     } else {
         buffer = blob as Buffer;
@@ -18,25 +18,14 @@ async function createRawData(blob: Blob | Buffer, user: string, mimeType: string
     return `${hex}${user}${mimeType}${fileExtension}${timestamp}`;
 }
 
-async function delivApiUpload(user: string, apiKey: string, blob: Blob | Buffer, endpoint: string = "api.timondev.com/api/upload"): Promise<DelivApiResponse> {
-    let blobType: { mime?: string; ext?: string } | undefined;
-
+async function delivApiUpload(user: string, apiKey: string, blob: Blob | Buffer, mimeType: string, endpoint: string = "api.timondev.com/api/upload"): Promise<DelivApiResponse> {
     if (typeof blob !== "undefined" && Buffer.isBuffer(blob)) {
         const uInt8Array = new Uint8Array(blob);
 
-        blobType = await fileTypeFromBuffer(uInt8Array);
-
-        blob = new Blob([uInt8Array], { type: blobType?.mime || "application/octet-stream" });
-    } else {
-        blobType = await fileTypeFromBlob(blob);
+        blob = new Blob([uInt8Array], { type: mimeType });
     }
 
-    let mimeType: string = blobType?.mime || blob?.type || "application/octet-stream";
-    let fileExtension: string = blobType?.ext || "";
-
-    if (fileExtension === "" && extension(mimeType) !== false) {
-        fileExtension = extension(mimeType) || "";
-    }
+    const fileExtension = extension(mimeType) || "";
 
     const currentTime = Date.now().toString();
 
