@@ -1,11 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createRawData = createRawData;
 exports.delivApiUpload = delivApiUpload;
-const crypto_1 = __importDefault(require("crypto"));
+const tslib_1 = require("tslib");
+const crypto_1 = tslib_1.__importDefault(require("crypto"));
 const file_type_1 = require("file-type");
 const mime_types_1 = require("mime-types");
 async function createRawData(blob, user, mimeType, fileExtension, timestamp) {
