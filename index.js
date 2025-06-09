@@ -6,9 +6,4 @@
 
 "use strict";
 
-const delivApiUpload = require("./dist/index.js");
-
-module.exports = {
-    default: delivApiUpload,
-    delivApiUpload
-};
+module.exports = require("./dist/index.js");

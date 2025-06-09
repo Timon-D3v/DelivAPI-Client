@@ -1,20 +1,37 @@
 import crypto from "crypto";
-import { fileTypeFromBlob } from "file-type";
+import { fileTypeFromBlob, fileTypeFromBuffer } from "file-type";
 import { extension } from "mime-types";
 import type { DelivApiResponse } from "./index.d";
-import { Blob as BufferBlob } from "buffer";
 
-async function createRawData(blob: Blob | BufferBlob, user: string, mimeType: string, fileExtension: string, timestamp: string): Promise<string> {
-    const arrayBuffer = await blob.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+async function createRawData(blob: Blob | Buffer, user: string, mimeType: string, fileExtension: string, timestamp: string): Promise<string> {
+    let buffer: Buffer | undefined;
+
+    if (blob instanceof Blob && !Buffer.isBuffer(blob)) {
+        const arrayBuffer = await blob.arrayBuffer();
+        buffer = Buffer.from(arrayBuffer);
+    } else {
+        buffer = blob as Buffer;
+    }
+
     const hex = buffer.toString("hex");
 
     return `${hex}${user}${mimeType}${fileExtension}${timestamp}`;
 }
 
-async function delivApiUpload(user: string, apiKey: string, blob: Blob, endpoint: string = "api.timondev.com/api/upload"): Promise<DelivApiResponse> {
-    const blobType = await fileTypeFromBlob(blob);
-    let mimeType: string = blobType?.mime || blob.type;
+async function delivApiUpload(user: string, apiKey: string, blob: Blob | Buffer, endpoint: string = "api.timondev.com/api/upload"): Promise<DelivApiResponse> {
+    let blobType: { mime?: string; ext?: string } | undefined;
+
+    if (typeof blob !== "undefined" && Buffer.isBuffer(blob)) {
+        const uInt8Array = new Uint8Array(blob);
+
+        blobType = await fileTypeFromBuffer(uInt8Array);
+
+        blob = new Blob([uInt8Array], { type: blobType?.mime || "application/octet-stream" });
+    } else {
+        blobType = await fileTypeFromBlob(blob);
+    }
+
+    let mimeType: string = blobType?.mime || blob?.type || "application/octet-stream";
     let fileExtension: string = blobType?.ext || "";
 
     if (fileExtension === "" && extension(mimeType) !== false) {
