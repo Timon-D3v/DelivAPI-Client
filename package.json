@@ -1,6 +1,6 @@
 {
   "name": "delivapi-client",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "The client function for my personal CDN/WebAPI for uploading and pulling images and other files from.",
   "homepage": "https://github.com/Timon-D3v/DelivAPI-Client#readme",
   "author": "Timon Fiedler",

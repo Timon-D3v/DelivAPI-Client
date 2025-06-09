@@ -6,4 +6,10 @@
 
 "use strict";
 
-module.exports = require("./dist/index.js");
+const { delivApiUpload, createRawData } = require("./dist/index.js");
+
+module.exports = {
+    default: delivApiUpload,
+    delivApiUpload,
+    createRawData
+};
