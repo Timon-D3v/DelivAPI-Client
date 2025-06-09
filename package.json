@@ -17,8 +17,7 @@
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"{src,public}/**/*.{ts,html,css,js}\"",
-    "publish:only": "npm publish",
-    "publish": "npm run format && npm run build && npm run publish:only"
+    "push": "npm run format && npm run build && npm publish"
   },
   "dependencies": {
     "file-type": "^21.0.0",
