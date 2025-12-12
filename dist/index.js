@@ -39,13 +39,13 @@ async function createRawData(blob, user, mimeType, fileExtension, timestamp) {
  * @param {string} apiKey - The API key used to sign the request.
  * @param {Blob | Buffer} blob - The file data to upload, as a Blob or Buffer.
  * @param {string} mimeType - The MIME type of the file being uploaded.
- * @param {string} [endpoint="api.timondev.com/api/upload"] - The API endpoint to upload the file to. Defaults to "api.timondev.com/api/upload".
+ * @param {string} [endpoint="https://api.timondev.com/api/upload"] - The API endpoint to upload the file to. Defaults to "https://api.timondev.com/api/upload".
  *
  * @returns {Promise<DelivApiResponse>} - A promise that resolves to a `DelivApiResponse` object containing the server's response.
  *
  * @throws {Error} - Will throw an error if the upload fails (i.e., response status is not 200).
  */
-async function delivApiUpload(user, apiKey, blob, mimeType, endpoint = "api.timondev.com/api/upload") {
+async function delivApiUpload(user, apiKey, blob, mimeType, endpoint = "https://api.timondev.com/api/upload") {
     if (typeof blob !== "undefined" && Buffer.isBuffer(blob)) {
         const uInt8Array = new Uint8Array(blob);
         blob = new Blob([uInt8Array], { type: mimeType });
