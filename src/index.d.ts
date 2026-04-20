@@ -1,62 +1,78 @@
 declare module "delivapi-client";
 
-export type DelivApiResponse =
-    | {
+export type DelivApiResponse = {
+    error: boolean;
+    message: string;
+};
+
+export type DelivApiUploadResponse =
+    | (Omit<DelivApiResponse, "error"> & {
           error: true;
-          message: string;
-      }
-    | {
+          url: null;
+      })
+    | (Omit<DelivApiResponse, "error"> & {
           error: false;
-          message: string;
           url: string;
-      };
+      });
+
+export type DelivApiUpdateResponse =
+    | (Omit<DelivApiResponse, "error"> & {
+          error: true;
+          url: null;
+      })
+    | (Omit<DelivApiResponse, "error"> & {
+          error: false;
+          url: string;
+      });
+
+export type DelivApiUploadInitialChunkResponse =
+    | (Omit<DelivApiResponse, "error"> & {
+          error: true;
+          url: null;
+      })
+    | (Omit<DelivApiResponse, "error"> & {
+          error: false;
+          url: string;
+      });
+
+export type DelivApiUpdateInitialChunkResponse = DelivApiUploadInitialChunkResponse;
+
+export type DelivApiUploadChunkResponse = DelivApiResponse;
 
 /**
- * Converts a given Blob or Buffer into a hexadecimal string, concatenates it with user information,
- * MIME type, file extension, and a timestamp, and returns the resulting string.
+ * Uploads a file (as a Blob or Buffer) to the DelivAPI server. Converts a Node.js Buffer to a Blob if necessary, appends required metadata to a FormData object, generates a signature for authentication, and sends a POST request to the specified endpoint. If the file size exceeds the maximum chunk size of 10 MB, it will be uploaded in chunks using the `delivApiUploadLargeFile` function. The function will retry the upload up to a specified number of times if it fails, and returns a `DelivApiUploadResponse` object containing the server's response.
  *
- * @param {Buffer | Blob} blob - The input data as a Blob (browser) or Buffer (Node.js).
- * @param {string} user - The identifier for the user associated with the data.
- * @param {string} mimeType - The MIME type of the data (e.g., "image/png").
- * @param {string} timestamp - A string representing the timestamp to associate with the data.
  *
- * @returns {Promise<string>} - A promise that resolves to a concatenated string containing the hex representation of the data and the provided metadata.
+ * @export
+ *
+ * @async
+ *
+ * @param {(Blob | Buffer)} blob - The file data to upload, as a Blob or Buffer.
+ * @param {{ user?: string; apiKey?: string; endpoint?: string; maxRetries?: number }} [options] - Optional configuration options for the upload.
+ * @param {string} [options.user] - The username or user identifier for the upload. If not provided, it will be read from the `DELIVAPI_USER` environment variable.
+ * @param {string} [options.apiKey] - The API key used to sign the request. If not provided, it will be read from the `DELIVAPI_SECRET` or `DELIVAPI_KEY` environment variables.
+ * @param {string} [options.endpoint="https://api.timondev.com"] - The API endpoint to upload the file to. If not provided, it will be read from the `DELIVAPI_URL` or `DELIVAPI_ENDPOINT` environment variables, or default to "https://api.timondev.com".
+ * @param {number} [options.maxRetries=3] - The maximum number of times to retry the upload if it fails.
+ *
+ * @returns {Promise<DelivApiUploadResponse>} - A promise that resolves to a `DelivApiUploadResponse` object containing the server's response.
  */
-declare function createRawData(blob: Blob | Buffer, user: string, mimeType: string, timestamp: string): Promise<string>;
+declare function delivApiUpload(blob: Blob | Buffer, options?: { user?: string; apiKey?: string; endpoint?: string; maxRetries?: number }): Promise<DelivApiUploadResponse>;
 
 /**
- * Uploads a file (as a Blob or Buffer) to the DelivAPI server.
+ * Updates a file (as a Blob or Buffer) on the DelivAPI server. A filename must be provided to identify which file to update. A new file will be uploaded and replace the existing file with the same filename. Converts a Node.js Buffer to a Blob if necessary, appends required metadata to a FormData object, generates a signature for authentication, and sends a POST request to the specified endpoint. If the file size exceeds the maximum chunk size of 10 MB, it will be uploaded in chunks using the `delivApiUploadLargeFile` function. The function will retry the upload up to a specified number of times if it fails, and returns a `DelivApiUpdateResponse` object containing the server's response.
  *
- * Converts a Node.js Buffer to a Blob if necessary, appends required metadata to a FormData object,
- * generates a signature for authentication, and sends a POST request to the specified endpoint.
+ * @export
  *
- * @param {string} user - The username or user identifier for the upload.
- * @param {string} apiKey - The API key used to sign the request.
- * @param {Blob | Buffer} blob - The file data to upload, as a Blob or Buffer.
- * @param {string} mimeType - The MIME type of the file being uploaded.
- * @param {string} [endpoint="api.timondev.com/api/upload"] - The API endpoint to upload the file to. Defaults to "api.timondev.com/api/upload".
+ * @async
  *
- * @returns {Promise<DelivApiResponse>} - A promise that resolves to a `DelivApiResponse` object containing the server's response.
+ * @param {string} filename - The name of the file to update.
+ * @param {(Blob | Buffer)} blob - The new file data, as a Blob or Buffer.
+ * @param {{ user?: string; apiKey?: string; endpoint?: string; maxRetries?: number }} [options] - Optional configuration options for the update.
+ * @param {string} [options.user] - The username or user identifier for the update. If not provided, it will be read from the `DELIVAPI_USER` environment variable.
+ * @param {string} [options.apiKey] - The API key used to sign the request. If not provided, it will be read from the `DELIVAPI_SECRET` or `DELIVAPI_KEY` environment variables.
+ * @param {string} [options.endpoint="https://api.timondev.com"] - The API endpoint to update the file on. If not provided, it will be read from the `DELIVAPI_URL` or `DELIVAPI_ENDPOINT` environment variables, or default to "https://api.timondev.com".
+ * @param {number} [options.maxRetries=3] - The maximum number of times to retry the update if it fails.
  *
- * @throws {Error} - Will throw an error if the upload fails (i.e., response status is not 200).
+ * @returns {Promise<DelivApiUpdateResponse>} - A promise that resolves to a `DelivApiUpdateResponse` object containing the server's response.
  */
-declare function delivApiUpload(user: string, apiKey: string, blob: Blob | Buffer, mimeType: string, endpoint: string = "api.timondev.com/api/upload"): Promise<DelivApiResponse>;
-
-/**
- * Replaces a file (uploaded as a Blob or Buffer) on the DelivAPI server.
- *
- * Converts a Node.js Buffer to a Blob if necessary, appends required metadata to a FormData object,
- * generates a signature for authentication, and sends a POST request to the specified endpoint.
- *
- * @param {string} user - The username or user identifier for the upload.
- * @param {string} apiKey - The API key used to sign the request.
- * @param {string} filename - The filename of the file to be updated.
- * @param {Blob | Buffer} blob - The file data to upload, as a Blob or Buffer.
- * @param {string} mimeType - The MIME type of the file being uploaded.
- * @param {string} [endpoint="https://api.timondev.com/api/update"] - The API endpoint to upload the file to. Defaults to "https://api.timondev.com/api/update".
- *
- * @returns {Promise<DelivApiResponse>} - A promise that resolves to a `DelivApiResponse` object containing the server's response.
- *
- * @throws {Error} - Will throw an error if the upload fails (i.e., response status is not 200).
- */
-declare function delivApiUpdateFile(user: string, apiKey: string, filename: string, blob: Blob | Buffer, mimeType: string, endpoint: string = "https://api.timondev.com/api/update"): Promise<DelivApiResponse>;
+declare function delivApiUpdateFile(filename: string, blob: Blob | Buffer, options?: { user?: string; apiKey?: string; endpoint?: string; maxRetries?: number }): Promise<DelivApiUpdateResponse>;
