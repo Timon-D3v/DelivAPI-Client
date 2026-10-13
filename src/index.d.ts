@@ -76,3 +76,21 @@ declare function delivApiUpload(blob: Blob | Buffer, options?: { user?: string; 
  * @returns {Promise<DelivApiUpdateResponse>} - A promise that resolves to a `DelivApiUpdateResponse` object containing the server's response.
  */
 declare function delivApiUpdateFile(filename: string, blob: Blob | Buffer, options?: { user?: string; apiKey?: string; endpoint?: string; maxRetries?: number }): Promise<DelivApiUpdateResponse>;
+
+/**
+ * Deletes a file from the DelivAPI server. It sends a POST request with the filename for deletion, and returns the server's response which indicates whether the file was successfully deleted or if it failed. The request will not be retried.
+ *
+ *
+ * @export
+ *
+ * @async
+ *
+ * @param {string} filename - The name of the file to delete.
+ * @param {{ user: string; apiKey: string; endpoint: string; maxRetries: number }} options - Configuration options for the deletion.
+ * @param {string} options.user - The username or user identifier for the deletion.
+ * @param {string} options.apiKey - The API key used to sign the request.
+ * @param {string} options.endpoint - The API endpoint to delete the file from.
+ *
+ * @returns {Promise<DelivApiResponse>} - A promise that resolves to a `DelivApiResponse` object containing the server's response.
+ */
+declare function delivApiDeleteFile(filename: string, options?: { user?: string; apiKey?: string; endpoint?: string }): Promise<DelivApiResponse>;

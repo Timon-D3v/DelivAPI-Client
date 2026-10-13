@@ -5,7 +5,7 @@ TypeScript/JavaScript client for **DelivAPI** — my personal CDN/WebAPI for upl
 - NPM: `delivapi-client`
 - Client repo: https://github.com/Timon-D3v/DelivAPI-Client
 - Server repo: https://github.com/Timon-D3v/DelivAPI
-- Version: **2.0.0** (improved database structure, new chunked uploads, more specific types)
+- Version: **2.1.0** (added image transformation via url queries)
 
 ---
 

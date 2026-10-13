@@ -1,6 +1,6 @@
 {
   "name": "delivapi-client",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "The client function for my personal CDN/WebAPI for uploading and pulling images and other files from.",
   "homepage": "https://github.com/Timon-D3v/DelivAPI-Client#readme",
   "author": "Timon Fiedler",
@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "format": "prettier --write \"{src,public}/**/*.{ts,html,css,js}\"",
+    "format": "npx prettier --write \"src/**/*.ts\"",
     "fmt": "npm run format",
     "push": "npm run format && npm run build && npm publish"
   },

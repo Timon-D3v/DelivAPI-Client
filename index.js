@@ -1,16 +1,16 @@
 /*!
  * DelivAPI-Client
- * Copyright(c) 2025 Timon Fiedler
+ * Copyright(c) 2025-2026 Timon Fiedler
  * MIT Licensed
  */
 
 "use strict";
 
-const { delivApiUpload, createRawData, delivApiUpdateFile } = require("./dist/index.js");
+const { delivApiUpload, delivApiUpdateFile, delivApiDeleteFile } = require("./dist/index.js");
 
 module.exports = {
     default: delivApiUpload,
     delivApiUpload,
-    createRawData,
-    delivApiUpdateFile
+    delivApiUpdateFile,
+    delivApiDeleteFile
 };

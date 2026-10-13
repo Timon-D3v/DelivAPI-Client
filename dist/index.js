@@ -11,7 +11,6 @@ const MAX_CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
 /**
  * Uploads a file (as a Blob or Buffer) to the DelivAPI server. Converts a Node.js Buffer to a Blob if necessary, appends required metadata to a FormData object, generates a signature for authentication, and sends a POST request to the specified endpoint. If the file size exceeds the maximum chunk size of 10 MB, it will be uploaded in chunks using the `delivApiUploadLargeFile` function. The function will retry the upload up to a specified number of times if it fails, and returns a `DelivApiUploadResponse` object containing the server's response.
  *
- *
  * @export
  *
  * @async
@@ -416,6 +415,21 @@ function delivApiUploadChunk(chunkIndex, filename, blob, options) {
         }
     });
 }
+/**
+ * Deletes a file from the DelivAPI server. It sends a POST request with the filename for deletion, and returns the server's response which indicates whether the file was successfully deleted or if it failed. The request will not be retried.
+ *
+ * @export
+ *
+ * @async
+ *
+ * @param {string} filename - The name of the file to delete.
+ * @param {{ user: string; apiKey: string; endpoint: string; maxRetries: number }} options - Configuration options for the deletion.
+ * @param {string} options.user - The username or user identifier for the deletion.
+ * @param {string} options.apiKey - The API key used to sign the request.
+ * @param {string} options.endpoint - The API endpoint to delete the file from.
+ *
+ * @returns {Promise<DelivApiResponse>} - A promise that resolves to a `DelivApiResponse` object containing the server's response.
+ */
 function delivApiDeleteFile(filename, options) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
